@@ -1,3 +1,4 @@
+import os
 import dash
 from dash import dcc, html
 from dash.dependencies import Output, Input
@@ -9,7 +10,9 @@ data=pd.read_json("assets/data.json")
 #geo_data=pd.read_json("assets/laender_999_geo.json")
 
 app=dash.Dash(__name__)
+server = app.server
 
 # Run the Dash app
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    port = int(os.environ.get("PORT", 8080))  # Default to 8080 if no PORT variable is found
+    app.run_server(host="0.0.0.0", port=port, debug=False)
