@@ -22,7 +22,33 @@ server = app.server
 app.layout = dbc.Container([
     # General page title
     html.H1("Statistics of volunteering in Austria", className="text-center my-4 fw-bold"),
-    
+    # Collapse-able Sidebar
+    # Top-left Menu Button + Sidebar
+    html.Div([
+        dbc.Button(
+            "☰",  # Contents Icon
+            id="open-offcanvas",
+            n_clicks=0,
+            color="light",
+            style={"position": "fixed", "top": "20px", "left": "20px", "zIndex": 9999, "fontSize": "24px"}
+        ),
+        dbc.Offcanvas(
+            [
+                html.H5("Contents", className="my-3"),
+                dbc.Nav([
+                    dbc.NavLink("Geographic Distribution", href="#choropleth-card", external_link=True),
+                    dbc.NavLink("Time-Series Trends", href="#timeseries-card", external_link=True),
+                    # Add more links as needed
+                ], vertical=True)
+            ],
+            id="offcanvas",
+            is_open=False,
+            placement="start",   # Sidebar opens from the left
+            backdrop=True,       # Dim background when open
+            style={"width": "250px", "backgroundColor": "white"},
+        ),
+    ]),
+
     dbc.Card([
         dbc.CardBody([
             html.H4("Geographic Distribution of Volunteering", className="mb-4 mt-2 text-center fw-semibold"),
@@ -34,9 +60,9 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id="metric-dropdown",
                         options=[
-                            {'label': 'All volunteers', 'value': 'perc_volunteers_from_pop'},
-                            {'label': 'Formal volunteers', 'value': 'perc_formal_from_pop'},
-                            {'label': 'Informal volunteers', 'value': 'perc_informal_from_pop'}
+                            {'label': 'Any', 'value': 'perc_volunteers_from_pop'},
+                            {'label': 'Formal', 'value': 'perc_formal_from_pop'},
+                            {'label': 'Informal', 'value': 'perc_informal_from_pop'}
                         ],
                         value='perc_volunteers_from_pop',
                         style={'width': '100%'}
@@ -83,7 +109,7 @@ app.layout = dbc.Container([
                 dbc.Col(html.Div(id='data-insights', className='data-insights'), width=12),
             ])
         ])
-    ], className="mb-5 shadow-sm border-0"),
+    ],id="choropleth-card", className="mb-5 shadow-sm border-0"),
     # ... your existing layout above ...
 
     # ---- Time Series Card ----
@@ -92,17 +118,7 @@ app.layout = dbc.Container([
             html.H4("Time-series of Volunteering in Austria", className="mb-4 mt-2 text-center fw-semibold"),
             dbc.Row([
                 dbc.Col([
-                    html.Label("Demographic", className="mb-1"),
-                    dcc.Dropdown(
-                        id="ts-demographic-dropdown",
-                        options=[{'label': d.capitalize().replace("_", " "), 'value': d}
-                                for d in sorted(trend_data['demographic'].unique())],
-                        value='age',  # Set your preferred default
-                        clearable=False
-                    )
-                ], width=3),
-                dbc.Col([
-                    html.Label("Volunteer Type", className="mb-1"),
+                    html.Label("Type of Volunteering", className="mb-1"),
                     dcc.Dropdown(
                         id="ts-type-dropdown",
                         options=[
@@ -116,9 +132,19 @@ app.layout = dbc.Container([
                         value='any',
                         clearable=False
                     )
+                ], width=3),                
+                dbc.Col([
+                    html.Label("Demographic", className="mb-1"),
+                    dcc.Dropdown(
+                        id="ts-demographic-dropdown",
+                        options=[{'label': d.capitalize().replace("_", " "), 'value': d}
+                                for d in sorted(trend_data['demographic'].unique())],
+                        value='age',  # Set your preferred default
+                        clearable=False
+                    )
                 ], width=3),
                 dbc.Col([
-                    html.Label("Show", className="mb-1"),
+                    html.Label("Statistic", className="mb-1"),
                     dcc.RadioItems(
                         id="ts-radio",
                         options=[
@@ -143,7 +169,7 @@ app.layout = dbc.Container([
             ], className='mb-4', align="center"),
             dcc.Graph(id="ts-line-graph")
         ])
-    ], className="mb-5 shadow-sm border-0"),
+    ],id="timeseries-card", className="mb-5 shadow-sm border-0"),
     # ...rest of your layout (e.g., other cards below)...
 
 
@@ -171,6 +197,19 @@ def resolve_column(metric_value, stat_type_value):
         return f'median_hours_{base}'
     else:
         return metric_value
+    
+
+@app.callback(
+    Output("offcanvas", "is_open"),
+    Input("open-offcanvas", "n_clicks"),
+    State("offcanvas", "is_open"),
+)
+def toggle_offcanvas(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
 
 @app.callback(
     Output('region-boxplot', 'figure'),
