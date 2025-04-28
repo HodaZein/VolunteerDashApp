@@ -73,7 +73,7 @@ app.layout = dbc.Container([
                 dbc.Col([
                     dbc.Button("Reset to Austria", id="reset-button", color="primary", className="mt-3")
                 ], width=2, style={'textAlign': 'right', 'paddingTop': 18}),
-            ], className='mb-4', align="center", style={"background": "#f8f9fa", "borderRadius": "0.5rem", "padding": "14px"}),
+            ], className='mb-4', align="center", style={ "borderRadius": "0.5rem", "padding": "14px"}),
 
             dbc.Row([
                 dbc.Col(dcc.Graph(id='austria-map', config={'displayModeBar': False}), width=6),
@@ -97,7 +97,7 @@ app.layout = dbc.Container([
                         id="ts-demographic-dropdown",
                         options=[{'label': d.capitalize().replace("_", " "), 'value': d}
                                 for d in sorted(trend_data['demographic'].unique())],
-                        value='gender',  # Set your preferred default
+                        value='age',  # Set your preferred default
                         clearable=False
                     )
                 ], width=3),
