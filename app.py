@@ -7,6 +7,10 @@ import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
 
+# Add this near the top, next to your other data loading
+motiv_barrier_df = pd.read_json("assets/motivations_barriers_fake_data.json")
+
+
 trend_data = pd.read_json("assets/volunteering_time_series_fake.json")  # Adjust path if needed
 
 data = pd.read_json("assets/data.json")
@@ -38,6 +42,7 @@ app.layout = dbc.Container([
                 dbc.Nav([
                     dbc.NavLink("Geographic Distribution", href="#choropleth-card", external_link=True),
                     dbc.NavLink("Time-Series Trends", href="#timeseries-card", external_link=True),
+                    dbc.NavLink("Motivations and Barriers to Volunteering", href="#motivation-barrier-card", external_link=True),
                     # Add more links as needed
                 ], vertical=True)
             ],
@@ -171,6 +176,51 @@ app.layout = dbc.Container([
         ])
     ],id="timeseries-card", className="mb-5 shadow-sm border-0"),
     # ...rest of your layout (e.g., other cards below)...
+    # ---- Diverging Bar Chart Card ----
+    dbc.Card([
+        dbc.CardBody([
+            html.H4("Motivations and Barriers to Volunteering", className="mb-4 mt-2 text-center fw-semibold"),
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Type", className="mb-1"),
+                    dcc.RadioItems(
+                        id="mb-type-radio",
+                        options=[
+                            {'label': 'Motivations', 'value': 'motivation'},
+                            {'label': 'Barriers', 'value': 'barrier'}
+                        ],
+                        value='motivation',
+                        labelStyle={'marginRight': '15px'}
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Gender", className="mb-1"),
+                    dcc.Dropdown(
+                        id="mb-gender-dropdown",
+                        options=[{'label': g.capitalize(), 'value': g} for g in motiv_barrier_df['gender'].unique()],
+                        value='all',
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Year", className="mb-1"),
+                    dcc.Slider(
+                        id="mb-year-slider",
+                        min=int(motiv_barrier_df['year'].min()),
+                        max=int(motiv_barrier_df['year'].max()),
+                        value=int(motiv_barrier_df['year'].max()),
+                        marks={int(y): str(int(y)) for y in sorted(motiv_barrier_df['year'].unique())},
+                        step=None
+                    )
+                ], width=6)
+            ], className='mb-4'),
+
+            dcc.Graph(id="mb-diverging-bar")
+        ])
+    ], id="motivation-barrier-card", className="mb-5 shadow-sm border-0"),
+
 
 
     # dcc.Store for region selection
@@ -373,6 +423,74 @@ def update_time_series(demographic, volunteer_type, show_type, year_range):
         template="plotly_white"
     )
     return fig
+
+
+@app.callback(
+    Output("mb-diverging-bar", "figure"),
+    Input("mb-type-radio", "value"),
+    Input("mb-gender-dropdown", "value"),
+    Input("mb-year-slider", "value")
+)
+def update_motiv_barrier_chart(type_choice, gender_choice, selected_year):
+    df = motiv_barrier_df[
+        (motiv_barrier_df['type'] == type_choice) &
+        (motiv_barrier_df['gender'] == gender_choice) &
+        (motiv_barrier_df['year'] == selected_year)
+    ].sort_values("fully_agree", ascending=True)
+
+    categories = df['category']
+
+    import plotly.graph_objects as go
+    fig = go.Figure()
+
+    fig.add_bar(
+        x=-df['rather_disagree'],
+        y=categories,
+        orientation='h',
+        name='Rather disagree',
+        marker_color='#ff9896'
+    )
+
+    fig.add_bar(
+        x=-df['not_at_all'],
+        y=categories,
+        orientation='h',
+        name='Not at all',
+        marker_color='#d62728'
+    )
+
+    fig.add_bar(
+        x=df['rather_agree'],
+        y=categories,
+        orientation='h',
+        name='Rather agree',
+        marker_color='#98df8a'
+    )
+    fig.add_bar(
+        x=df['fully_agree'],
+        y=categories,
+        orientation='h',
+        name='Fully agree',
+        marker_color='#2ca02c'
+    )
+
+    fig.update_layout(
+        barmode='relative',
+        title=f"{type_choice.capitalize()} – {gender_choice.capitalize()} ({selected_year})",
+        xaxis_title="Level of Agreement (%)",
+        yaxis_title="",
+        legend_title="Agreement Level",
+        xaxis=dict(
+            tickmode='array',
+            tickvals=[-100,-80, -60, -40, -20, 0, 20, 40, 60, 80,100],
+            ticktext=[str(abs(v)) for v in [-100,-80, -60, -40, -20, 0, 20, 40, 60, 80,100]]
+        ),
+        height=600,
+        template='plotly_white'
+    )
+
+    return fig
+
 
 
 if __name__ == "__main__":
