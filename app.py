@@ -13,6 +13,18 @@ motiv_barrier_df = pd.read_json("assets/motivations_barriers_fake_data.json")
 
 trend_data = pd.read_json("assets/volunteering_time_series_fake.json")  # Adjust path if needed
 
+
+
+# Load multi-year JSON data
+with open("assets/formal_volunteering_fake_data.json", "r", encoding="utf-8") as f:
+    formal_data_by_year = json.load(f)
+
+with open("assets/informal_volunteering_fake_data.json", "r", encoding="utf-8") as f:
+    informal_data_by_year = json.load(f)
+
+activity_years = sorted([int(y) for y in formal_data_by_year.keys()])
+
+
 data = pd.read_json("assets/data.json")
 with open("assets/laender_999_geo.json", "r", encoding="utf-8") as file:
     geojson_data = json.load(file)
@@ -220,6 +232,71 @@ app.layout = dbc.Container([
             dcc.Graph(id="mb-diverging-bar")
         ])
     ], id="motivation-barrier-card", className="mb-5 shadow-sm border-0"),
+
+    # --- Stacked Bar Chart Card ---
+    dbc.Card([
+        dbc.CardBody([
+            html.H4("Volunteer Activity by Demographic Group", className="mb-4 mt-2 text-center fw-semibold"),
+
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Type of Volunteering", className="mb-1"),
+                    dcc.Dropdown(
+                        id="activity-type-dropdown",
+                        options=[
+                            {"label": "Formal", "value": "formal"},
+                            {"label": "Informal", "value": "informal"}
+                        ],
+                        value="formal",
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Demographic", className="mb-1"),
+                    dcc.Dropdown(
+                        id="activity-demographic-dropdown",
+                        options=[
+                            {"label": "Total", "value": "Total"},
+                            {"label": "Gender", "value": "Gender"},
+                            {"label": "Education", "value": "Education"},
+                            {"label": "Frequency of Volunteering", "value": "Freq_of_volunteering"},
+                            {"label": "Age", "value": "Age"},
+                        ],
+                        value="Gender",
+                        clearable=False
+                    )
+                ], width=3),
+                dbc.Col([
+                    html.Label("Display Mode", className="mb-1"),
+                    dcc.RadioItems(
+                        id="activity-display-mode",
+                        options=[
+                            {"label": "Counts", "value": "count"},
+                            {"label": "Percentages", "value": "percent"}
+                        ],
+                        value="count",
+                        labelStyle={ 'marginRight': '15px'}
+                    )
+                ], width=2),
+                dbc.Col([
+                    html.Label("Year", className="mb-1"),
+                    dcc.Slider(
+                        id="activity-year-slider",
+                        min=int(min(YEARS)),
+                        max=int(max(YEARS)),
+                        value=int(max(YEARS)),
+                        marks={int(y): str(int(y)) for y in YEARS},
+                        step=None
+                    )
+                ],width=4, style={'paddingTop': 12})
+
+            ]),
+            
+            dcc.Graph(id="activity-stacked-bar")
+        ])
+    ], id="activity-bar-card", className="mb-5 shadow-sm border-0"),
+
 
 
 
@@ -490,6 +567,77 @@ def update_motiv_barrier_chart(type_choice, gender_choice, selected_year):
     )
 
     return fig
+
+
+@app.callback(
+    Output("activity-stacked-bar", "figure"),
+    Input("activity-type-dropdown", "value"),
+    Input("activity-demographic-dropdown", "value"),
+    Input("activity-display-mode", "value"),
+    Input("activity-year-slider", "value")
+)
+def update_activity_stacked_bar(vol_type, selected_demo, display_mode,selected_year):
+
+
+
+    # Choose dataset
+
+    data_by_year = formal_data_by_year if vol_type == "formal" else informal_data_by_year
+    year_str = str(selected_year)
+
+    if year_str in data_by_year:
+        data_source = data_by_year[year_str]
+    else:
+        # Fallback to empty data if year missing
+        return px.bar(title="No data available for selected year")
+
+    if selected_demo not in data_source:
+        return px.bar(title="No data available for selected demographic")
+
+    df = pd.DataFrame(data_source[selected_demo])
+
+
+    # Extract total volunteers from "Total"
+    total_list = data_source["Total"]
+    all_volunteers = next((item["all_volunteers"] for item in total_list if "all_volunteers" in item), None)
+
+    # Calculate display value
+    if display_mode == "percent" and all_volunteers:
+        df["value"] = df["count"] / all_volunteers * 100
+        y_axis_title = "Percentage of Volunteers (%)"
+    else:
+        df["value"] = df["count"]
+        y_axis_title = "Volunteers (in thousands)"
+
+    # Plot
+    if selected_demo == "Total":
+        df = df[df["name"].notnull()]
+        fig = px.bar(
+            df,
+            x="name",
+            y="value",
+            labels={"name": "Activity", "value": y_axis_title},
+            title=f"{vol_type.capitalize()} Volunteering - Total"
+        )
+    else:
+        fig = px.bar(
+            df,
+            x="name",
+            y="value",
+            color="category",
+            labels={"name": "Activity", "value": y_axis_title, "category": selected_demo},
+            title=f"{vol_type.capitalize()} Volunteering by {selected_demo} ({selected_year})"
+
+        )
+
+    fig.update_layout(
+        barmode="stack",
+        xaxis_tickangle=-45,
+        template="plotly_white",
+        height=500
+    )
+    return fig
+
 
 
 
