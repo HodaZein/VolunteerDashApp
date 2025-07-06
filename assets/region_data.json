@@ -1,7 +1,7 @@
 [
   {
     "year": 2006,
-    "state": "Austria",
+    "region": "Austria",
     "total_pop": 7200,
     "perc_volunteers_from_pop": 44.0,
     "perc_formal_from_pop": 28.0,
@@ -27,7 +27,7 @@
   },
   {
     "year": 2006,
-    "state": "Burgenland",
+    "region": "Burgenland",
     "total_pop": 243,
     "perc_volunteers_from_pop": 41.42,
     "perc_formal_from_pop": 26.59,
@@ -53,7 +53,7 @@
   },
   {
     "year": 2006,
-    "state": "Kärnten",
+    "region": "Kärnten",
     "total_pop": 459,
     "perc_volunteers_from_pop": 44.62,
     "perc_formal_from_pop": 26.59,
@@ -79,7 +79,7 @@
   },
   {
     "year": 2006,
-    "state": "Niederösterreich",
+    "region": "Niederösterreich",
     "total_pop": 1368,
     "perc_volunteers_from_pop": 46.85,
     "perc_formal_from_pop": 30.28,
@@ -105,7 +105,7 @@
   },
   {
     "year": 2006,
-    "state": "Oberösterreich",
+    "region": "Oberösterreich",
     "total_pop": 1198,
     "perc_volunteers_from_pop": 45.51,
     "perc_formal_from_pop": 33.64,
@@ -131,7 +131,7 @@
   },
   {
     "year": 2006,
-    "state": "Salzburg",
+    "region": "Salzburg",
     "total_pop": 449,
     "perc_volunteers_from_pop": 47.92,
     "perc_formal_from_pop": 32.34,
@@ -157,7 +157,7 @@
   },
   {
     "year": 2006,
-    "state": "Steiermark",
+    "region": "Steiermark",
     "total_pop": 1015,
     "perc_volunteers_from_pop": 43.38,
     "perc_formal_from_pop": 27.67,
@@ -183,7 +183,7 @@
   },
   {
     "year": 2006,
-    "state": "Tirol",
+    "region": "Tirol",
     "total_pop": 611,
     "perc_volunteers_from_pop": 48.54,
     "perc_formal_from_pop": 36.03,
@@ -209,7 +209,7 @@
   },
   {
     "year": 2006,
-    "state": "Vorarlberg",
+    "region": "Vorarlberg",
     "total_pop": 317,
     "perc_volunteers_from_pop": 47.3,
     "perc_formal_from_pop": 32.23,
@@ -235,7 +235,7 @@
   },
   {
     "year": 2006,
-    "state": "Wien",
+    "region": "Wien",
     "total_pop": 1540,
     "perc_volunteers_from_pop": 37.05,
     "perc_formal_from_pop": 17.04,
@@ -261,7 +261,7 @@
   },
   {
     "year": 2012,
-    "state": "Austria",
+    "region": "Austria",
     "total_pop": 7331,
     "perc_volunteers_from_pop": 46.0,
     "perc_formal_from_pop": 28.0,
@@ -287,7 +287,7 @@
   },
   {
     "year": 2012,
-    "state": "Burgenland",
+    "region": "Burgenland",
     "total_pop": 247,
     "perc_volunteers_from_pop": 43.3,
     "perc_formal_from_pop": 26.59,
@@ -313,7 +313,7 @@
   },
   {
     "year": 2012,
-    "state": "Kärnten",
+    "region": "Kärnten",
     "total_pop": 468,
     "perc_volunteers_from_pop": 46.65,
     "perc_formal_from_pop": 26.59,
@@ -339,7 +339,7 @@
   },
   {
     "year": 2012,
-    "state": "Niederösterreich",
+    "region": "Niederösterreich",
     "total_pop": 1393,
     "perc_volunteers_from_pop": 48.98,
     "perc_formal_from_pop": 30.28,
@@ -365,7 +365,7 @@
   },
   {
     "year": 2012,
-    "state": "Oberösterreich",
+    "region": "Oberösterreich",
     "total_pop": 1219,
     "perc_volunteers_from_pop": 47.58,
     "perc_formal_from_pop": 33.64,
@@ -391,7 +391,7 @@
   },
   {
     "year": 2012,
-    "state": "Salzburg",
+    "region": "Salzburg",
     "total_pop": 457,
     "perc_volunteers_from_pop": 50.1,
     "perc_formal_from_pop": 32.34,
@@ -417,7 +417,7 @@
   },
   {
     "year": 2012,
-    "state": "Steiermark",
+    "region": "Steiermark",
     "total_pop": 1034,
     "perc_volunteers_from_pop": 45.35,
     "perc_formal_from_pop": 27.67,
@@ -443,7 +443,7 @@
   },
   {
     "year": 2012,
-    "state": "Tirol",
+    "region": "Tirol",
     "total_pop": 622,
     "perc_volunteers_from_pop": 50.75,
     "perc_formal_from_pop": 36.03,
@@ -469,7 +469,7 @@
   },
   {
     "year": 2012,
-    "state": "Vorarlberg",
+    "region": "Vorarlberg",
     "total_pop": 323,
     "perc_volunteers_from_pop": 49.45,
     "perc_formal_from_pop": 32.23,
@@ -495,7 +495,7 @@
   },
   {
     "year": 2012,
-    "state": "Wien",
+    "region": "Wien",
     "total_pop": 1568,
     "perc_volunteers_from_pop": 38.74,
     "perc_formal_from_pop": 17.04,
@@ -521,7 +521,7 @@
   },
   {
     "year": 2016,
-    "state": "Austria",
+    "region": "Austria",
     "total_pop": 7420,
     "perc_volunteers_from_pop": 46.0,
     "perc_formal_from_pop": 31.0,
@@ -547,7 +547,7 @@
   },
   {
     "year": 2016,
-    "state": "Burgenland",
+    "region": "Burgenland",
     "total_pop": 250,
     "perc_volunteers_from_pop": 43.3,
     "perc_formal_from_pop": 29.44,
@@ -573,7 +573,7 @@
   },
   {
     "year": 2016,
-    "state": "Kärnten",
+    "region": "Kärnten",
     "total_pop": 473,
     "perc_volunteers_from_pop": 46.65,
     "perc_formal_from_pop": 29.44,
@@ -599,7 +599,7 @@
   },
   {
     "year": 2016,
-    "state": "Niederösterreich",
+    "region": "Niederösterreich",
     "total_pop": 1410,
     "perc_volunteers_from_pop": 48.98,
     "perc_formal_from_pop": 33.52,
@@ -625,7 +625,7 @@
   },
   {
     "year": 2016,
-    "state": "Oberösterreich",
+    "region": "Oberösterreich",
     "total_pop": 1234,
     "perc_volunteers_from_pop": 47.58,
     "perc_formal_from_pop": 37.25,
@@ -651,7 +651,7 @@
   },
   {
     "year": 2016,
-    "state": "Salzburg",
+    "region": "Salzburg",
     "total_pop": 463,
     "perc_volunteers_from_pop": 50.1,
     "perc_formal_from_pop": 35.81,
@@ -677,7 +677,7 @@
   },
   {
     "year": 2016,
-    "state": "Steiermark",
+    "region": "Steiermark",
     "total_pop": 1046,
     "perc_volunteers_from_pop": 45.35,
     "perc_formal_from_pop": 30.64,
@@ -703,7 +703,7 @@
   },
   {
     "year": 2016,
-    "state": "Tirol",
+    "region": "Tirol",
     "total_pop": 630,
     "perc_volunteers_from_pop": 50.75,
     "perc_formal_from_pop": 39.89,
@@ -729,7 +729,7 @@
   },
   {
     "year": 2016,
-    "state": "Vorarlberg",
+    "region": "Vorarlberg",
     "total_pop": 327,
     "perc_volunteers_from_pop": 49.45,
     "perc_formal_from_pop": 35.69,
@@ -755,7 +755,7 @@
   },
   {
     "year": 2016,
-    "state": "Wien",
+    "region": "Wien",
     "total_pop": 1587,
     "perc_volunteers_from_pop": 38.74,
     "perc_formal_from_pop": 18.86,
@@ -781,7 +781,7 @@
   },
   {
     "year": 2022,
-    "state": "Austria",
+    "region": "Austria",
     "total_pop": 7555,
     "perc_volunteers_from_pop": 49.4,
     "perc_formal_from_pop": 25.8,
@@ -807,7 +807,7 @@
   },
   {
     "year": 2022,
-    "state": "Burgenland",
+    "region": "Burgenland",
     "total_pop": 255,
     "perc_volunteers_from_pop": 46.5,
     "perc_formal_from_pop": 24.5,
@@ -831,7 +831,7 @@
   },
   {
     "year": 2022,
-    "state": "Kärnten",
+    "region": "Kärnten",
     "total_pop": 482,
     "perc_volunteers_from_pop": 50.1,
     "perc_formal_from_pop": 24.5,
@@ -855,7 +855,7 @@
   },
   {
     "year": 2022,
-    "state": "Niederösterreich",
+    "region": "Niederösterreich",
     "total_pop": 1435,
     "perc_volunteers_from_pop": 52.6,
     "perc_formal_from_pop": 27.9,
@@ -879,7 +879,7 @@
   },
   {
     "year": 2022,
-    "state": "Oberösterreich",
+    "region": "Oberösterreich",
     "total_pop": 1256,
     "perc_volunteers_from_pop": 51.1,
     "perc_formal_from_pop": 31.0,
@@ -903,7 +903,7 @@
   },
   {
     "year": 2022,
-    "state": "Salzburg",
+    "region": "Salzburg",
     "total_pop": 471,
     "perc_volunteers_from_pop": 53.8,
     "perc_formal_from_pop": 29.8,
@@ -927,7 +927,7 @@
   },
   {
     "year": 2022,
-    "state": "Steiermark",
+    "region": "Steiermark",
     "total_pop": 1065,
     "perc_volunteers_from_pop": 48.7,
     "perc_formal_from_pop": 25.5,
@@ -951,7 +951,7 @@
   },
   {
     "year": 2022,
-    "state": "Tirol",
+    "region": "Tirol",
     "total_pop": 641,
     "perc_volunteers_from_pop": 54.5,
     "perc_formal_from_pop": 33.2,
@@ -975,7 +975,7 @@
   },
   {
     "year": 2022,
-    "state": "Vorarlberg",
+    "region": "Vorarlberg",
     "total_pop": 333,
     "perc_volunteers_from_pop": 53.1,
     "perc_formal_from_pop": 29.7,
@@ -999,7 +999,7 @@
   },
   {
     "year": 2022,
-    "state": "Wien",
+    "region": "Wien",
     "total_pop": 1615,
     "perc_volunteers_from_pop": 41.6,
     "perc_formal_from_pop": 15.7,

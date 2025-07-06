@@ -7,30 +7,32 @@ import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
 
-# Add this near the top, next to your other data loading
+
+# Loading JSON files
+data = pd.read_json("assets/region_data.json")
+with open("assets/laender_999_geo.json", "r", encoding="utf-8") as file:
+    geojson_data = json.load(file)
+years = [2006,2012,2016,2022]
+regions = data['region'].unique()
+
+trend_data = pd.read_json("assets/volunteering_time_series_fake.json")  
+
 motiv_barrier_df = pd.read_json("assets/motivations_barriers_fake_data.json")
 
-
-trend_data = pd.read_json("assets/volunteering_time_series_fake.json")  # Adjust path if needed
-
-
-
-# Load multi-year JSON data
 with open("assets/formal_volunteering_fake_data.json", "r", encoding="utf-8") as f:
     formal_data_by_year = json.load(f)
 
 with open("assets/informal_volunteering_fake_data.json", "r", encoding="utf-8") as f:
     informal_data_by_year = json.load(f)
 
-activity_years = sorted([int(y) for y in formal_data_by_year.keys()])
+
+with open("assets/gender_comparison_data_multiyear.json", "r", encoding="utf-8") as f:
+    gender_data_by_year = json.load(f)
+
+with open("assets/errorBars_data_multiyear.json", "r", encoding="utf-8") as f:
+    errorBars_data_by_year = json.load(f)
 
 
-data = pd.read_json("assets/data.json")
-with open("assets/laender_999_geo.json", "r", encoding="utf-8") as file:
-    geojson_data = json.load(file)
-
-YEARS = sorted(data['year'].unique())
-STATES = data['state'].unique()
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
@@ -38,8 +40,7 @@ server = app.server
 app.layout = dbc.Container([
     # General page title
     html.H1("Statistics of volunteering in Austria", className="text-center my-4 fw-bold"),
-    # Collapse-able Sidebar
-    # Top-left Menu Button + Sidebar
+    # Top-left Menu Button + collabsable Sidebar
     html.Div([
         dbc.Button(
             "☰",  # Contents Icon
@@ -55,7 +56,9 @@ app.layout = dbc.Container([
                     dbc.NavLink("Geographic Distribution", href="#choropleth-card", external_link=True),
                     dbc.NavLink("Time-Series Trends", href="#timeseries-card", external_link=True),
                     dbc.NavLink("Motivations and Barriers to Volunteering", href="#motivation-barrier-card", external_link=True),
-                    # Add more links as needed
+                    dbc.NavLink("Volunteer Activity by Demographic Group", href="#activity-bar-card", external_link=True),
+                    dbc.NavLink("Gender comparison in Volunteering", href="#gender-comparison-card", external_link=True),
+                    dbc.NavLink("Volunteer Time Distribution", href="#errorBar-card", external_link=True),
                 ], vertical=True)
             ],
             id="offcanvas",
@@ -69,8 +72,9 @@ app.layout = dbc.Container([
     dbc.Card([
         dbc.CardBody([
             html.H4("Geographic Distribution of Volunteering", className="mb-4 mt-2 text-center fw-semibold"),
-            
-            # Filters in one row, well-spaced
+            html.H6("graph description"),
+
+            # Filters in one row
             dbc.Row([
                 dbc.Col([
                     html.Label("Type of Volunteering", className="mb-1"),
@@ -102,24 +106,26 @@ app.layout = dbc.Container([
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
-                    dcc.Slider(
-                        id='year-slider',
-                        min=int(min(YEARS)),
-                        max=int(max(YEARS)),
-                        value=int(max(YEARS)),
-                        marks={int(y): str(int(y)) for y in YEARS},
-                        step=None,
-                        tooltip={"placement": "bottom", "always_visible": False}
+                    dcc.Dropdown(
+                        id='year-dropdown',
+                        options=[
+                            {"label": str(y), "value": y}
+                            for y in years
+                        ],
+                        value=int(max(years)),
+                        clearable=False
                     )
-                ], width=4, style={'paddingTop': 12}),
+
+
+                ], width=4),
                 
                 dbc.Col([
                     dbc.Button("Reset to Austria", id="reset-button", color="primary", className="mt-3")
-                ], width=2, style={'textAlign': 'right', 'paddingTop': 18}),
+                ], width=2, style={'textAlign': 'right'}),
             ], className='mb-4', align="center", style={ "borderRadius": "0.5rem", "padding": "14px"}),
 
             dbc.Row([
-                dbc.Col(dcc.Graph(id='austria-map', config={'displayModeBar': False}), width=6),
+                dbc.Col(dcc.Graph(id='austria-map'), width=6),
                 dbc.Col(dcc.Graph(id='region-boxplot'), width=6)
             ]),
             dbc.Row([
@@ -187,7 +193,73 @@ app.layout = dbc.Container([
             dcc.Graph(id="ts-line-graph")
         ])
     ],id="timeseries-card", className="mb-5 shadow-sm border-0"),
-    # ...rest of your layout (e.g., other cards below)...
+
+    # ---- Time Series Comparison by Volunteering Type ----
+    dbc.Card([
+        dbc.CardBody([
+            html.H4("Time Series – Volunteering Type Comparison in Selected Demographic", className="mb-4 mt-2 text-center fw-semibold"),
+
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Demographic Dimension", className="mb-1"),
+                    dcc.Dropdown(
+                        id="ts2-demographic-dropdown",
+                        options=[
+                            {"label": d.capitalize().replace("_", " "), "value": d}
+                            for d in sorted(trend_data["demographic"].unique())
+                        ],
+                        value=sorted(trend_data["demographic"].unique())[0],
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Demographic Category", className="mb-1"),
+                    dcc.Dropdown(
+                        id="ts2-category-dropdown",
+                        options=[],  # will be populated via callback
+                        value=None,
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Display Mode", className="mb-1"),
+                    dcc.RadioItems(
+                        id="ts2-radio",
+                        options=[
+                            {"label": "Percentage", "value": "perc"},
+                            {"label": "Count", "value": "count"}
+                        ],
+                        value="perc",
+                        labelStyle={"display": "inline-block", "margin-right": "15px"}
+                    )
+                ], width=3, style={'paddingTop': 8}),
+
+                dbc.Col([
+                    html.Label("Year Range", className="mb-1"),
+                    dcc.RangeSlider(
+                        id="ts2-year-slider",
+                        min=int(trend_data["year"].min()),
+                        max=int(trend_data["year"].max()),
+                        value=[
+                            int(trend_data["year"].min()),
+                            int(trend_data["year"].max())
+                        ],
+                        marks={
+                            int(y): str(int(y)) for y in sorted(trend_data["year"].unique())
+                        },
+                        step=None
+                    )
+                ], width=3, style={'paddingTop': 12})
+            ], className='mb-4'),
+
+
+            dcc.Graph(id="ts2-line-graph")
+        ])
+    ], id="ts2-time-series-card", className="mb-5 shadow-sm border-0"),
+
+
     # ---- Diverging Bar Chart Card ----
     dbc.Card([
         dbc.CardBody([
@@ -218,14 +290,15 @@ app.layout = dbc.Container([
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
-                    dcc.Slider(
-                        id="mb-year-slider",
-                        min=int(motiv_barrier_df['year'].min()),
-                        max=int(motiv_barrier_df['year'].max()),
-                        value=int(motiv_barrier_df['year'].max()),
-                        marks={int(y): str(int(y)) for y in sorted(motiv_barrier_df['year'].unique())},
-                        step=None
+                    dcc.Dropdown(
+                        id="mb-year-dropdown",
+                        options=[
+                            {"label": str(y), "value": y} for y in years
+                        ],
+                        value=max(years),
+                        clearable=False
                     )
+
                 ], width=6)
             ], className='mb-4'),
 
@@ -281,21 +354,140 @@ app.layout = dbc.Container([
                 ], width=2),
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
-                    dcc.Slider(
-                        id="activity-year-slider",
-                        min=int(min(YEARS)),
-                        max=int(max(YEARS)),
-                        value=int(max(YEARS)),
-                        marks={int(y): str(int(y)) for y in YEARS},
-                        step=None
+                    dcc.Dropdown(
+                        id="activity-year-dropdown",
+                        options=[
+                            {"label": str(y), "value": y} for y in years
+                        ],
+                        value=max(years),
+                        clearable=False
                     )
-                ],width=4, style={'paddingTop': 12})
+
+                ],width=4)
 
             ]),
             
             dcc.Graph(id="activity-stacked-bar")
         ])
     ], id="activity-bar-card", className="mb-5 shadow-sm border-0"),
+
+    # ---- Gender Comparison Card ----
+    dbc.Card([
+        dbc.CardBody([
+            html.H4("Gender Comparison in Volunteering", className="mb-4 mt-2 text-center fw-semibold"),
+
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Type of Volunteering", className="mb-1"),
+                    dcc.Dropdown(
+                        id="gender-type-dropdown",
+                        options=[
+                            {"label": "Formal", "value": "Formal"},
+                            {"label": "Informal", "value": "Informal"}
+                        ],
+                        value="Formal",
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Dimension", className="mb-1"),
+                        dcc.Dropdown(
+                            id="gender-dimension-dropdown",
+                            options=[],  # Initially empty
+                            value=None,
+                            clearable=False
+                        )
+
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Display Mode", className="mb-1"),
+                    dcc.RadioItems(
+                        id="gender-display-mode",
+                        options=[
+                            {"label": "Counts", "value": "count"},
+                            {"label": "Percentages", "value": "percent"}
+                        ],
+                        value="count",
+                        labelStyle={'display': 'inline-block', 'marginRight': '15px'}
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Year", className="mb-1"),
+                    dcc.Dropdown(
+                        id="gender-year-dropdown",
+                        options=[
+                            {"label": str(y), "value": y} for y in years
+                        ],
+                        value=max(years),
+                        clearable=False
+                    )
+
+                ], width=3)
+            ]),
+
+            dcc.Graph(id="gender-comparison-bar")
+        ])
+    ], id="gender-comparison-card", className="mb-5 shadow-sm border-0"),
+    # ---- Boxplot Card ----
+    dbc.Card([
+        dbc.CardBody([
+            html.H4("Volunteer Time Distribution", className="mb-4 mt-2 text-center fw-semibold"),
+
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Type of Volunteering", className="mb-1"),
+                    dcc.Dropdown(
+                        id="errorBar-voltype-dropdown",
+                        options=[
+                            {"label": "Any", "value": "Total"},
+                            {"label": "Formal", "value": "Formal"},
+                            {"label": "Informal", "value": "Informal"}
+                        ],
+                        value="Total",
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Demographic Dimension", className="mb-1"),
+                    dcc.Dropdown(
+                        id="errorBar-demographic-dropdown",
+                        options=[
+                            {"label": "Total", "value": "Total"},
+                            {"label": "Gender", "value": "Gender"},
+                            {"label": "Age", "value": "Age"},
+                            {"label": "Education", "value": "Education"},
+                            {"label": "Migration Background", "value": "MigrationBackground"},
+                            {"label": "Employment", "value": "Employment"},
+                            {"label": "Municipality Size", "value": "MunicipalitySize"},
+                            {"label": "Region", "value": "Region"},
+                            {"label": "Task Type", "value": "TaskType"}
+                        ],
+                        value="Total",
+                        clearable=False
+                    )
+                ], width=3),
+
+                dbc.Col([
+                    html.Label("Year", className="mb-1"),
+                    dcc.Dropdown(
+                        id="errorBar-year-dropdown",
+                        options=[
+                            {"label": str(y), "value": y} for y in years
+                        ],
+                        value=max(years),
+                        clearable=False
+                    )
+                ], width=6)
+            ], className='mb-4'),
+
+            dcc.Graph(id="errorBar-figure")
+        ])
+    ], id="errorBar-card", className="mb-5 shadow-sm border-0"),
+
 
 
 
@@ -338,6 +530,8 @@ def toggle_offcanvas(n, is_open):
 
 
 
+import plotly.graph_objects as go
+
 @app.callback(
     Output('region-boxplot', 'figure'),
     Output('austria-map', 'figure'),
@@ -345,21 +539,19 @@ def toggle_offcanvas(n, is_open):
     Input('austria-map', 'clickData'),
     Input('metric-dropdown', 'value'),
     Input('stat-type-radio', 'value'),
-    Input('year-slider', 'value'),
+    Input('year-dropdown', 'value'),
     Input('reset-button', 'n_clicks'),
     State('selected-region', 'data'),
     prevent_initial_call=False
 )
 def update_visuals(click_data, metric_value, stat_type, year, reset_clicks, current_region):
-    import plotly.graph_objects as go
-
-    # Context-aware region selection logic
     triggered = ctx.triggered_id
+
     if triggered == "reset-button":
         new_region = "Austria"
     elif triggered == "austria-map" and click_data and click_data.get('points') and 'location' in click_data['points'][0]:
         new_region = click_data['points'][0]['location']
-    elif current_region in STATES:
+    elif current_region in regions:
         new_region = current_region
     else:
         new_region = "Austria"
@@ -373,48 +565,86 @@ def update_visuals(click_data, metric_value, stat_type, year, reset_clicks, curr
         'perc_informal_from_pop': 'informal'
     }[metric_value]
 
-    # --- Boxplot ---
-    if new_region not in d_year['state'].values:
+    # Error bar chart (replaces boxplot)
+    if new_region not in d_year['region'].values:
         new_region = "Austria"
-    q1 = d_year.loc[d_year['state'] == new_region, f'25_hrs_{prefix}'].values[0]
-    median = d_year.loc[d_year['state'] == new_region, f'median_hours_{prefix}'].values[0]
-    q3 = d_year.loc[d_year['state'] == new_region, f'75_hrs_{prefix}'].values[0]
 
-    fig_box = go.Figure()
-    fig_box.add_trace(go.Scatter(
-        x=[q1, q3], y=['Distribution'], mode='lines',
-        line=dict(color='lightblue', width=12), name='25th–75th Percentile'
-    ))
-    fig_box.add_trace(go.Scatter(
-        x=[median], y=['Distribution'], mode='markers',
-        marker=dict(color='black', size=10), name='Median'
-    ))
-    fig_box.update_layout(
-        title=f"Volunteer Hours Boxplot– {new_region} ({year})",
-        xaxis_title="Hours per Week",
-        yaxis=dict(showticklabels=False),
-        margin=dict(t=130, l=20, r=20, b=20),
-        height=300
+    q1 = d_year.loc[d_year['region'] == new_region, f'25_hrs_{prefix}'].values[0]
+    median = d_year.loc[d_year['region'] == new_region, f'median_hours_{prefix}'].values[0]
+    q3 = d_year.loc[d_year['region'] == new_region, f'75_hrs_{prefix}'].values[0]
+    avg = d_year.loc[d_year['region'] == new_region, f'avg_hours_{prefix}'].values[0]
 
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=[new_region],
+        y=[median],
+        error_y=dict(
+            type="data",
+            symmetric=False,
+            array=[q3 - median],
+            arrayminus=[median - q1],
+            color="black",
+            thickness=2,
+            width=8
+        ),
+        marker_color="steelblue",
+        name="Median with IQR",
+        hovertemplate=(
+            f"<b>{new_region}</b><br>"
+            f"Q3 (75th %): {q3}<br>"
+            f"Median (50th %): {median}<br>"
+            f"Q1 (25th %): {q1}<extra></extra>"
+        )
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=[new_region],
+        y=[avg],
+        mode="markers",
+        marker=dict(
+            color="black",
+            size=10,
+            symbol="diamond"
+        ),
+        name="Average",
+        hovertemplate=(
+            f"<b>{new_region}</b><br>"
+            f"Average Hours: {avg}<extra></extra>"
+        )
+    ))
+
+    fig.update_layout(
+        title=f"Volunteer Hours – {new_region} ({year})",
+        yaxis_title="Hours per Week",
+        xaxis_title="",
+        template="plotly_white",
+        showlegend=True,
+        legend=dict(
+            orientation="v",
+            yanchor="top",
+            y=1,
+            xanchor="left",
+            x=1.05
+        )
     )
 
-    # --- Choropleth Map ---
+    # --- Choropleth map as in your current code ---
     column = resolve_column(metric_value, stat_type)
     fig_map = px.choropleth(
         d_year,
-        locations="state",
+        locations="region",
         geojson=geojson_data,
         color=column,
         color_continuous_scale="Reds",
         featureidkey="properties.name",
         title=f"Volunteering Map ({year})"
-
     )
 
-    # Highlight and zoom only if specific region is selected
     if new_region != 'Austria':
         selected_feature = next(
-            (f for f in geojson_data['features'] if f['properties']['name'] == new_region), None
+            (f for f in geojson_data['features'] if f['properties']['name'] == new_region),
+            None
         )
         if selected_feature:
             coords = selected_feature['geometry']['coordinates'][0][0]
@@ -433,13 +663,15 @@ def update_visuals(click_data, metric_value, stat_type, year, reset_clicks, curr
         selector=dict(type='choropleth')
     )
 
-    return fig_box, fig_map, new_region
+    return fig, fig_map, new_region
+
 
 @app.callback(
     Output('data-insights', 'children'),
     Input('metric-dropdown', 'value'),
     Input('stat-type-radio', 'value'),
-    Input('year-slider', 'value'),
+    Input('year-dropdown', 'value')
+,
 )
 def update_insights(metric_dropdown_value, stat_type_value, year):
     column = resolve_column(metric_dropdown_value, stat_type_value)
@@ -456,8 +688,8 @@ def update_insights(metric_dropdown_value, stat_type_value, year):
 
     return [
         html.H4(f"Year: {year}"),
-        html.H5(f"Highest: {highest['state']} ({highest[column]} {label_map[stat_type_value]})"),
-        html.H5(f"Lowest: {lowest['state']} ({lowest[column]} {label_map[stat_type_value]})")
+        html.H5(f"Highest: {highest['region']} ({highest[column]} {label_map[stat_type_value]})"),
+        html.H5(f"Lowest: {lowest['region']} ({lowest[column]} {label_map[stat_type_value]})")
     ]
 
 
@@ -506,7 +738,7 @@ def update_time_series(demographic, volunteer_type, show_type, year_range):
     Output("mb-diverging-bar", "figure"),
     Input("mb-type-radio", "value"),
     Input("mb-gender-dropdown", "value"),
-    Input("mb-year-slider", "value")
+    Input("mb-year-dropdown", "value")
 )
 def update_motiv_barrier_chart(type_choice, gender_choice, selected_year):
     df = motiv_barrier_df[
@@ -574,7 +806,7 @@ def update_motiv_barrier_chart(type_choice, gender_choice, selected_year):
     Input("activity-type-dropdown", "value"),
     Input("activity-demographic-dropdown", "value"),
     Input("activity-display-mode", "value"),
-    Input("activity-year-slider", "value")
+    Input("activity-year-dropdown", "value")
 )
 def update_activity_stacked_bar(vol_type, selected_demo, display_mode,selected_year):
 
@@ -638,6 +870,287 @@ def update_activity_stacked_bar(vol_type, selected_demo, display_mode,selected_y
     )
     return fig
 
+
+@app.callback(
+    Output("gender-comparison-bar", "figure"),
+    Input("gender-type-dropdown", "value"),
+    Input("gender-dimension-dropdown", "value"),
+    Input("gender-display-mode", "value"),
+    Input("gender-year-dropdown", "value")
+)
+def update_gender_comparison(vol_type, dimension, display_mode, selected_year):
+    import plotly.express as px
+    import pandas as pd
+
+    # Load data for the chosen year
+    year_data = gender_data_by_year.get(str(selected_year), {})
+
+    # Compose key for this dimension
+    key = f"{vol_type}_{dimension}"
+    section = year_data.get(key)
+
+    if section is None:
+        return px.bar(title="No data for selected filters.")
+
+    df = pd.DataFrame(section)
+
+    # Determine x-axis label based on dimension
+    if dimension == "NumberOfOrgs":
+        x_col = "num_orgs"
+    elif dimension == "TaskTypes":
+        x_col = "task"
+    elif dimension == "Areas":
+        x_col = "area"
+    elif dimension == "Time":
+        x_col = "hours_range"
+    else:
+        x_col = "category"
+
+    if display_mode == "count":
+        df_long = pd.melt(
+            df,
+            id_vars=[x_col],
+            value_vars=["men_count", "women_count"],
+            var_name="Gender",
+            value_name="Value"
+        )
+        y_label = "Number of Volunteers (thousands)"
+    else:
+        df_long = pd.melt(
+            df,
+            id_vars=[x_col],
+            value_vars=["men_perc", "women_perc"],
+            var_name="Gender",
+            value_name="Value"
+        )
+        y_label = "Percentage of Volunteers (%)"
+
+    # Map gender names
+    df_long["Gender"] = df_long["Gender"].replace({
+        "men_count": "Men",
+        "women_count": "Women",
+        "men_perc": "Men",
+        "women_perc": "Women"
+    })
+
+    # Plot grouped bar
+    fig = px.bar(
+        df_long,
+        x=x_col,
+        y="Value",
+        color="Gender",
+        barmode="group",
+        color_discrete_map={
+            "Men": "blue",
+            "Women": "red"
+        }
+    )
+
+    fig.update_layout(
+        title=f"{vol_type} Volunteering – {dimension} ({selected_year})",
+        yaxis_title=y_label,
+        xaxis_title=x_col,
+        template="plotly_white",
+        height=500
+    )
+
+    return fig
+
+@app.callback(
+    Output("gender-dimension-dropdown", "options"),
+    Output("gender-dimension-dropdown", "value"),
+    Input("gender-type-dropdown", "value")
+)
+def update_dimension_options(vol_type):
+    if vol_type == "Formal":
+        options = [
+            {"label": "Number of Organizations", "value": "NumberOfOrgs"},
+            {"label": "Task Types", "value": "TaskTypes"},
+            {"label": "Areas", "value": "Areas"},
+            {"label": "Time", "value": "Time"}
+        ]
+        default_value = "Areas"
+    else:
+        options = [
+            {"label": "Areas", "value": "Areas"},
+            {"label": "Time", "value": "Time"}
+        ]
+        default_value = "Areas"
+    return options, default_value
+
+@app.callback(
+    Output("errorBar-figure", "figure"),
+    Input("errorBar-voltype-dropdown", "value"),
+    Input("errorBar-demographic-dropdown", "value"),
+    Input("errorBar-year-dropdown", "value"),
+)
+def update_errorBar(vol_type, demographic, selected_year):
+    import plotly.graph_objects as go
+    import plotly.colors as pc
+
+    # Retrieve year data
+    year_data = errorBars_data_by_year.get(str(selected_year), {})
+    category_data = year_data.get(demographic, [])
+
+    # Filter by volunteering type
+    df = pd.DataFrame([
+        d for d in category_data
+        if d["volunteering_type"] == vol_type
+    ])
+
+    if df.empty:
+        return go.Figure().update_layout(
+            title=f"No data for selection in {selected_year}"
+        )
+
+    # Prepare color palette
+    color_list = pc.qualitative.Plotly
+    colors = color_list * (len(df) // len(color_list) + 1)
+
+    fig = go.Figure()
+
+    for i, (_, row) in enumerate(df.iterrows()):
+        # Add bar for median with IQR as error bars
+        fig.add_trace(go.Bar(
+            x=[row["category_value"]],
+            y=[row["percentile_50"]],
+            error_y=dict(
+                type="data",
+                symmetric=False,
+                array=[row["percentile_75"] - row["percentile_50"]],
+                arrayminus=[row["percentile_50"] - row["percentile_25"]],
+                thickness=2,
+                width=8,
+                color="rgba(0,0,0,0.5)"
+            ),
+            name=row["category_value"],
+            marker_color=colors[i],
+            hovertemplate=(
+                f"<b>{row['category_value']}</b><br>"
+                f"Q3 (75th %): {row['percentile_75']}<br>"
+                f"Median (50th %): {row['percentile_50']}<br>"
+                f"Q1 (25th %): {row['percentile_25']}<br>"
+                
+            )
+        ))
+
+        # Add mean as a scatter point overlaying the bar
+        fig.add_trace(go.Scatter(
+            x=[row["category_value"]],
+            y=[row["avg_hours"]],
+            mode="markers",
+            marker=dict(
+                color="black",
+                size=10,
+                symbol="diamond"
+            ),
+            name=f"Mean ({row['category_value']})",
+            hovertemplate=(
+                f"<b>{row['category_value']}</b><br>"
+                f"Mean: {row['avg_hours']}<extra></extra>"
+            ),
+            showlegend=True
+        ))
+
+    fig.update_layout(
+        title=f"Volunteer Hours per Week – {vol_type} – {demographic} ({selected_year})",
+        yaxis_title="Hours per Week",
+        xaxis_title=demographic if demographic != "Total" else "",
+        barmode="group",
+        template="plotly_white",
+        height=500,
+        legend=dict(
+            orientation="v",
+            yanchor="top",
+            y=1,
+            xanchor="left",
+            x=1.05,
+            title="Legend"
+        )
+    )
+
+    return fig
+
+@app.callback(
+    Output("ts2-category-dropdown", "options"),
+    Output("ts2-category-dropdown", "value"),
+    Input("ts2-demographic-dropdown", "value")
+)
+def update_ts2_categories(demographic):
+    if demographic is None:
+        return [], None
+
+    filtered = trend_data[trend_data["demographic"] == demographic]
+    unique_categories = sorted(filtered["category"].unique())
+
+    options = [
+        {"label": cat, "value": cat} for cat in unique_categories
+    ]
+
+    # Default to first category
+    default_value = unique_categories[0] if unique_categories else None
+
+    return options, default_value
+
+@app.callback(
+    Output("ts2-line-graph", "figure"),
+    Input("ts2-demographic-dropdown", "value"),
+    Input("ts2-category-dropdown", "value"),
+    Input("ts2-radio", "value"),
+    Input("ts2-year-slider", "value")
+)
+def update_ts2_graph(demographic, category, display_mode, year_range):
+    import plotly.express as px
+
+    if demographic is None or category is None:
+        return px.line(title="No data available.")
+
+    # Filter the trend data
+    df_filtered = trend_data[
+        (trend_data["demographic"] == demographic) &
+        (trend_data["category"] == category) &
+        (trend_data["year"] >= year_range[0]) &
+        (trend_data["year"] <= year_range[1])
+    ]
+
+    # Volunteering types to compare
+    vol_types = [
+        "any",
+        "formal",
+        "informal",
+        "both_formal_and_informal",
+        "formal_only",
+        "informal_only"
+    ]
+
+    fig = px.line()
+
+    for vol_type in vol_types:
+        if display_mode == "perc":
+            y_col = f"{vol_type}_volunteer_perc"
+            y_label = "Percentage of Volunteers"
+        else:
+            y_col = f"{vol_type}_volunteer_count"
+            y_label = "Number of Volunteers"
+
+        if y_col in df_filtered.columns:
+            fig.add_scatter(
+                x=df_filtered["year"],
+                y=df_filtered[y_col],
+                mode='lines+markers',
+                name=vol_type.replace("_", " ").capitalize()
+            )
+
+    fig.update_layout(
+        title=f"Volunteering Type Comparison – {category} ({demographic.capitalize()})",
+        xaxis_title="Year",
+        yaxis_title=y_label,
+        legend_title="Type of Volunteering",
+        height=500,
+        template="plotly_white"
+    )
+
+    return fig
 
 
 
