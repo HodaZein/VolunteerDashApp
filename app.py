@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 
 
 # Loading JSON files
-data = pd.read_json("assets/Geo_interpolated_by_year_test.json")
+data = pd.read_json("assets/Geo_interpolated_by_year.json")
 with open("assets/laender_999_geo.json", "r", encoding="utf-8") as file:
     geojson_data = json.load(file)
 years = [2006,2012,2016,2022]
