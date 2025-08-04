@@ -214,46 +214,46 @@
       "women_perc":46.1
     }
   ],
-  "Formal_Time": [
+  "Formal_Time/week": [
     {
-      "hours_range": "<1 hour",
+      "hours_range/week": "<1 hour",
       "men_count": 340.2,
       "men_perc":53.7,
       "women_count": 293.0,
       "women_perc":46.3
     },
     {
-      "hours_range": "1-4 hours",
+      "hours_range/week": "1-4 hours",
       "men_count": 393.1,
       "men_perc":58.2,
       "women_count": 282.1,
       "women_perc":41.8
     },
     {
-      "hours_range": "5-9 hours",
+      "hours_range/week": "5-9 hours",
       "men_count": 141.3,
       "men_perc":63.8,
       "women_count": 80.3,
       "women_perc":36.2
     },
     {
-      "hours_range": "10-19 hours",
+      "hours_range/week": "10-19 hours",
       "men_count": 104.2,
       "men_perc":66.7,
       "women_count": 52.0,
       "women_perc":33.3
     },
     {
-      "hours_range": "20 hours or more",
+      "hours_range/week": "20 hours or more",
       "men_count": 61.7,
       "men_perc":66.3,
       "women_count": 31.3,
       "women_perc":33.7
     }
   ],
-  "Informal_Time": [
+  "Informal_Time/week": [
     {
-      "hours_range": "<1 hour",
+      "hours_range/week": "<1 hour",
       "men_count": 537.3,
       "men_perc":57.9,
       "women_count": 390.2,
@@ -261,28 +261,28 @@
     
     },
     {
-      "hours_range": "1-4 hours",
+      "hours_range/week": "1-4 hours",
       "men_count": 396.4,
       "men_perc":47.5,
       "women_count": 438.3,
       "women_perc":52.5
     },
     {
-      "hours_range": "5-9 hours",
+      "hours_range/week": "5-9 hours",
       "men_count": 145.5,
       "men_perc":40.6,
       "women_count": 212.9,
       "women_perc":59.4
     },
     {
-      "hours_range": "10-19 hours",
+      "hours_range/week": "10-19 hours",
       "men_perc":43.3,
       "men_count": 128.4,
       "women_count": 168.4,
       "women_perc":56.7
     },
     {
-      "hours_range": "20 hours or more",
+      "hours_range/week": "20 hours or more",
       "men_count": 85.4,
       "men_perc":43.2,
       "women_count": 112.4,

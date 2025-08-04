@@ -211,74 +211,74 @@
         "women_perc": 46.1
       }
     ],
-    "Formal_Time": [
+    "Formal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 340.2,
         "men_perc": 53.7,
         "women_count": 293.0,
         "women_perc": 46.3
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 393.1,
         "men_perc": 58.2,
         "women_count": 282.1,
         "women_perc": 41.8
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 141.3,
         "men_perc": 63.8,
         "women_count": 80.3,
         "women_perc": 36.2
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 104.2,
         "men_perc": 66.7,
         "women_count": 52.0,
         "women_perc": 33.3
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 61.7,
         "men_perc": 66.3,
         "women_count": 31.3,
         "women_perc": 33.7
       }
     ],
-    "Informal_Time": [
+    "Informal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 537.3,
         "men_perc": 57.9,
         "women_count": 390.2,
         "women_perc": 42.1
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 396.4,
         "men_perc": 47.5,
         "women_count": 438.3,
         "women_perc": 52.5
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 145.5,
         "men_perc": 40.6,
         "women_count": 212.9,
         "women_perc": 59.4
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_perc": 43.3,
         "men_count": 128.4,
         "women_count": 168.4,
         "women_perc": 56.7
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 85.4,
         "men_perc": 43.2,
         "women_count": 112.4,
@@ -498,74 +498,74 @@
         "women_perc": 42.2
       }
     ],
-    "Formal_Time": [
+    "Formal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 308.2,
         "men_perc": 55.3,
         "women_count": 249.3,
         "women_perc": 44.7
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 431.5,
         "men_perc": 60.6,
         "women_count": 280.1,
         "women_perc": 39.4
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 150.5,
         "men_perc": 67.8,
         "women_count": 71.4,
         "women_perc": 32.2
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 98.3,
         "men_perc": 63.2,
         "women_count": 57.3,
         "women_perc": 36.8
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 66.0,
         "men_perc": 65.0,
         "women_count": 35.5,
         "women_perc": 35.0
       }
     ],
-    "Informal_Time": [
+    "Informal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 627.5,
         "men_perc": 61.3,
         "women_count": 396.5,
         "women_perc": 38.7
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 448.2,
         "men_perc": 49.3,
         "women_count": 461.2,
         "women_perc": 50.7
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 145.2,
         "men_perc": 38.6,
         "women_count": 230.8,
         "women_perc": 61.4
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 145.5,
         "men_perc": 47.6,
         "women_count": 159.9,
         "women_perc": 52.4
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 93.4,
         "men_perc": 46.6,
         "women_count": 107.0,
@@ -785,74 +785,74 @@
         "women_perc": 45.5
       }
     ],
-    "Formal_Time": [
+    "Formal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 348.0,
         "men_perc": 49.5,
         "women_count": 354.8,
         "women_perc": 50.5
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 416.5,
         "men_perc": 61.1,
         "women_count": 264.6,
         "women_perc": 38.9
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 138.6,
         "men_perc": 66.9,
         "women_count": 68.5,
         "women_perc": 33.1
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 107.7,
         "men_perc": 62.5,
         "women_count": 64.6,
         "women_perc": 37.5
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 63.3,
         "men_perc": 70.2,
         "women_count": 26.9,
         "women_perc": 29.8
       }
     ],
-    "Informal_Time": [
+    "Informal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 530.5,
         "men_perc": 53.5,
         "women_count": 460.7,
         "women_perc": 46.5
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 317.5,
         "men_perc": 44.3,
         "women_count": 399.8,
         "women_perc": 55.7
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 130.9,
         "men_perc": 36.2,
         "women_count": 230.9,
         "women_perc": 63.8
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 131.1,
         "men_perc": 43.1,
         "women_count": 173.3,
         "women_perc": 56.9
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 77.8,
         "men_perc": 39.5,
         "women_count": 119.4,
@@ -1072,74 +1072,74 @@
         "women_perc": 47.2
       }
     ],
-    "Formal_Time": [
+    "Formal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 317.3,
         "men_perc": 57.2,
         "women_count": 237.7,
         "women_perc": 42.8
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 380.0,
         "men_perc": 56.8,
         "women_count": 289.3,
         "women_perc": 43.2
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 125.2,
         "men_perc": 61.3,
         "women_count": 79.0,
         "women_perc": 38.7
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 109.7,
         "men_perc": 69.6,
         "women_count": 47.9,
         "women_perc": 30.4
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 56.1,
         "men_perc": 66.5,
         "women_count": 28.3,
         "women_perc": 33.5
       }
     ],
-    "Informal_Time": [
+    "Informal_Time/week": [
       {
-        "hours_range": "<1 hour",
+        "hours_range/week": "<1 hour",
         "men_count": 651.5,
         "men_perc": 62.3,
         "women_count": 394.7,
         "women_perc": 37.7
       },
       {
-        "hours_range": "1-4 hours",
+        "hours_range/week": "1-4 hours",
         "men_count": 354.2,
         "men_perc": 45.8,
         "women_count": 418.9,
         "women_perc": 54.2
       },
       {
-        "hours_range": "5-9 hours",
+        "hours_range/week": "5-9 hours",
         "men_count": 143.8,
         "men_perc": 37.5,
         "women_count": 239.6,
         "women_perc": 62.5
       },
       {
-        "hours_range": "10-19 hours",
+        "hours_range/week": "10-19 hours",
         "men_count": 131.9,
         "men_perc": 44.3,
         "women_count": 165.7,
         "women_perc": 55.7
       },
       {
-        "hours_range": "20 hours or more",
+        "hours_range/week": "20 hours or more",
         "men_count": 94.0,
         "men_perc": 45.4,
         "women_count": 113.1,

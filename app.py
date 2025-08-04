@@ -495,7 +495,20 @@ app.layout = dbc.Container([
                 ], width=2)
             ], align="center", justify="center",className='mb-4'),
 
-            dcc.Graph(id="gender-comparison-bar")
+            dcc.Graph(id="gender-comparison-bar"),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),                    
+                    html.P([
+                        "The above graph compares the contribution of men vs women in volunteering.", 
+                        html.Br(),
+                        "The bars show the percentage of contribution of each gender from all volunteers in the selected year, type of volunteering, and dimension category "
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )                  
+      
         ])
     ], id="gender-comparison-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
     # ---- Boxplot Card ----
@@ -519,7 +532,7 @@ app.layout = dbc.Container([
                 ], width=2),
 
                 dbc.Col([
-                    html.Label("Demographic Dimension", className="mb-1"),
+                    html.Label("Demographic", className="mb-1"),
                     dcc.Dropdown(
                         id="errorBar-demographic-dropdown",
                         options=[
@@ -551,7 +564,19 @@ app.layout = dbc.Container([
                 ], width=2)
             ], align="center", justify="center",className='mb-4'),
 
-            dcc.Graph(id="errorBar-figure")
+            dcc.Graph(id="errorBar-figure"),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),                    
+                    html.P([
+                        "The above graph compares weekly time spent on different volunteering types by each demographic category.The height of each bar indicates the median volunteering time, while the black diamond marker shows the mean (average) value. The error bars extending from the diamond represent the interquartile range, capturing the spread between the 25th and 75th percentiles. ", 
+                        #html.Br(),
+                        
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )
         ])
     ], id="errorBar-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
@@ -978,8 +1003,8 @@ def update_gender_comparison(vol_type, dimension, display_mode, selected_year):
         x_col = "task"
     elif dimension == "Areas":
         x_col = "area"
-    elif dimension == "Time":
-        x_col = "hours_range"
+    elif dimension == "Time/week":
+        x_col = "hours_range/week"
     else:
         x_col = "category"
 
@@ -1044,13 +1069,13 @@ def update_dimension_options(vol_type):
             {"label": "Number of Organizations", "value": "NumberOfOrgs"},
             {"label": "Task Types", "value": "TaskTypes"},
             {"label": "Areas", "value": "Areas"},
-            {"label": "Time", "value": "Time"}
+            {"label": "Time/week", "value": "Time/week"}
         ]
         default_value = "Areas"
     else:
         options = [
             {"label": "Areas", "value": "Areas"},
-            {"label": "Time", "value": "Time"}
+            {"label": "Time/week", "value": "Time/week"}
         ]
         default_value = "Areas"
     return options, default_value
