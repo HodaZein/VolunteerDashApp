@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 
 
 # Loading JSON files
-data = pd.read_json("assets/region_data.json")
+data = pd.read_json("assets/Geo_interpolated_by_year_test.json")
 with open("assets/laender_999_geo.json", "r", encoding="utf-8") as file:
     geojson_data = json.load(file)
 years = [2006,2012,2016,2022]
@@ -54,7 +54,8 @@ app.layout = dbc.Container([
                 html.H5("Contents", className="my-3"),
                 dbc.Nav([
                     dbc.NavLink("Geographic Distribution", href="#choropleth-card", external_link=True),
-                    dbc.NavLink("Time-Series Trends", href="#timeseries-card", external_link=True),
+                    dbc.NavLink("Time-Series Trends (demgraphic comparison)", href="#timeseries-card", external_link=True),
+                    dbc.NavLink("Time-Series Trends (volunteering type comparison", href="#ts2-time-series-card", external_link=True),
                     dbc.NavLink("Motivations and Barriers to Volunteering", href="#motivation-barrier-card", external_link=True),
                     dbc.NavLink("Volunteer Activity by Demographic Group", href="#activity-bar-card", external_link=True),
                     dbc.NavLink("Gender comparison in Volunteering", href="#gender-comparison-card", external_link=True),
@@ -72,7 +73,6 @@ app.layout = dbc.Container([
     dbc.Card([
         dbc.CardBody([
             html.H4("Geographic Distribution of Volunteering", className="mb-4 mt-2 text-center fw-semibold"),
-            html.H6("graph description"),
 
             # Filters in one row
             dbc.Row([
@@ -88,7 +88,7 @@ app.layout = dbc.Container([
                         value='perc_volunteers_from_pop',
                         style={'width': '100%'}
                     ),
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Statistic", className="mb-1"),
@@ -96,13 +96,13 @@ app.layout = dbc.Container([
                         id="stat-type-radio",
                         options=[
                             {'label': 'Percentage', 'value': 'perc'},
-                            {'label': 'Avg Hours', 'value': 'avg_hours'},
+                            {'label': 'Avg Hours/week', 'value': 'avg_hours'},
                             {'label': 'Median Hours', 'value': 'median_hours'}
                         ],
                         value='perc',
                         labelStyle={'marginRight': '15px'}
                     ),
-                ], width=3, style={'paddingTop': 8}),
+                ], width=2, style={'paddingTop': 30}),
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
@@ -117,28 +117,37 @@ app.layout = dbc.Container([
                     )
 
 
-                ], width=4),
+                ], width=2),
                 
                 dbc.Col([
                     dbc.Button("Reset to Austria", id="reset-button", color="primary", className="mt-3")
                 ], width=2, style={'textAlign': 'right'}),
-            ], className='mb-4', align="center", style={ "borderRadius": "0.5rem", "padding": "14px"}),
+            ], className='mb-4', align="center",justify="center"),
 
             dbc.Row([
                 dbc.Col(dcc.Graph(id='austria-map'), width=6),
                 dbc.Col(dcc.Graph(id='region-boxplot'), width=6)
             ]),
             dbc.Row([
-                dbc.Col(html.Div(id='data-insights', className='data-insights'), width=12),
-            ])
+                dbc.Col(html.Div(id='data-insights', className='data-insights'), width=12)
+            ]),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),
+                    html.P("The above graph shows the distribution of volunteers across Austrian regions.The percentages represent the proportion of people who have participated in the selected volunteering type during the selected year from the total population above 15 years old from the selected region.")
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )
+
         ])
-    ],id="choropleth-card", className="mb-5 shadow-sm border-0"),
+    ],id="choropleth-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
     # ... your existing layout above ...
 
     # ---- Time Series Card ----
     dbc.Card([
         dbc.CardBody([
-            html.H4("Time-series of Volunteering in Austria", className="mb-4 mt-2 text-center fw-semibold"),
+            html.H4("Time-series trends of Volunteering across demographic categories", className="mb-4 mt-2 text-center fw-semibold"),
             dbc.Row([
                 dbc.Col([
                     html.Label("Type of Volunteering", className="mb-1"),
@@ -155,7 +164,7 @@ app.layout = dbc.Container([
                         value='any',
                         clearable=False
                     )
-                ], width=3),                
+                ], width=2),                
                 dbc.Col([
                     html.Label("Demographic", className="mb-1"),
                     dcc.Dropdown(
@@ -165,7 +174,7 @@ app.layout = dbc.Container([
                         value='age',  # Set your preferred default
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
                 dbc.Col([
                     html.Label("Statistic", className="mb-1"),
                     dcc.RadioItems(
@@ -189,15 +198,35 @@ app.layout = dbc.Container([
                         step=None
                     )
                 ], width=4, style={'paddingTop': 12})
-            ], className='mb-4', align="center"),
-            dcc.Graph(id="ts-line-graph")
+            ], className='mb-4', align="center",justify="center"),
+            dcc.Graph(id="ts-line-graph"),
+            dbc.Alert(
+                [   
+                    html.H6("Graph description", className="alert-heading"),
+                    html.P([
+                        "The above graph shows the time series trends of volunteering across different demographic categories through the years. ",
+                        "For the volunteering types (Any, Formal, Informal), the percentages represent the proportion of people who have participated in the selected volunteering type during the selected year from the number of residents in Austria who belong to the selected demographic category.",
+                        html.Br(), html.Br(),
+                        "However, for the volunteering types (Formal and Informal, Formal Only, Informal Only), the percentage is from the number of people from the selected demographic category who actually volunteered during the selected year.",
+                        html.Br(), html.Br(),
+                        "For instance:",
+                        html.Br(),
+                        "• Volunteering type = Formal, demographic = gender, statistic = percentage → percentage of men who did formal volunteering from all men in Austria.",
+                        html.Br(),
+                        "• Volunteering type = Formal only, demographic = gender, statistic = percentage → percentage of men who only did formal volunteering from all volunteering men in Austria."
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )            
         ])
-    ],id="timeseries-card", className="mb-5 shadow-sm border-0"),
+
+    ],id="timeseries-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
     # ---- Time Series Comparison by Volunteering Type ----
     dbc.Card([
         dbc.CardBody([
-            html.H4("Time Series – Volunteering Type Comparison in Selected Demographic", className="mb-4 mt-2 text-center fw-semibold"),
+            html.H4("Time-series trends of Volunteering across volunteering types", className="mb-4 mt-2 text-center fw-semibold"),
 
             dbc.Row([
                 dbc.Col([
@@ -211,7 +240,7 @@ app.layout = dbc.Container([
                         value=sorted(trend_data["demographic"].unique())[0],
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Demographic Category", className="mb-1"),
@@ -221,10 +250,10 @@ app.layout = dbc.Container([
                         value=None,
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
-                    html.Label("Display Mode", className="mb-1"),
+                    html.Label("Statistic", className="mb-1"),
                     dcc.RadioItems(
                         id="ts2-radio",
                         options=[
@@ -232,9 +261,9 @@ app.layout = dbc.Container([
                             {"label": "Count", "value": "count"}
                         ],
                         value="perc",
-                        labelStyle={"display": "inline-block", "margin-right": "15px"}
+                        labelStyle={"margin-right": "15px"}
                     )
-                ], width=3, style={'paddingTop': 8}),
+                ], width=2, style={'paddingTop': 8}),
 
                 dbc.Col([
                     html.Label("Year Range", className="mb-1"),
@@ -251,13 +280,28 @@ app.layout = dbc.Container([
                         },
                         step=None
                     )
-                ], width=3, style={'paddingTop': 12})
-            ], className='mb-4'),
+                ], width=4, style={'paddingTop': 12})
+            ], align= "center",justify="center",className='mb-4'),
 
 
-            dcc.Graph(id="ts2-line-graph")
+            dcc.Graph(id="ts2-line-graph"),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),                    
+                    html.P([
+                        "The above graph shows the time series trends of volunteering across different voluntering types through the years. ",
+                        "For the volunteering types (Any, Formal, Informal), the percentages represent the proportion of people who have participated in the selected volunteering type during the selected year from the number of residents in Austria who belong to the selected demographic category.",
+                        html.Br(), html.Br(),
+                        "However, for the volunteering types (Formal and Informal, Formal Only, Informal Only), the percentage is from the number of people from the selected demographic category who actually volunteered during the selected year."
+ 
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )                        
+
         ])
-    ], id="ts2-time-series-card", className="mb-5 shadow-sm border-0"),
+    ], id="ts2-time-series-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
 
     # ---- Diverging Bar Chart Card ----
@@ -276,7 +320,7 @@ app.layout = dbc.Container([
                         value='motivation',
                         labelStyle={'marginRight': '15px'}
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Gender", className="mb-1"),
@@ -286,7 +330,7 @@ app.layout = dbc.Container([
                         value='all',
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
@@ -299,12 +343,22 @@ app.layout = dbc.Container([
                         clearable=False
                     )
 
-                ], width=6)
-            ], className='mb-4'),
+                ], width=2)
+            ], align="center", justify="center",className='mb-4'),
 
-            dcc.Graph(id="mb-diverging-bar")
+            dcc.Graph(id="mb-diverging-bar"),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),                    
+                    html.P([
+                        "The above graph shows the reasons that motivated people who volunteered in the selected year and the the barriers that faced people who did not volunteer in the selected year, sorted by 'strongly agree'." 
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )                        
         ])
-    ], id="motivation-barrier-card", className="mb-5 shadow-sm border-0"),
+    ], id="motivation-barrier-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
     # --- Stacked Bar Chart Card ---
     dbc.Card([
@@ -323,7 +377,7 @@ app.layout = dbc.Container([
                         value="formal",
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Demographic", className="mb-1"),
@@ -339,16 +393,16 @@ app.layout = dbc.Container([
                         value="Gender",
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
                 dbc.Col([
-                    html.Label("Display Mode", className="mb-1"),
+                    html.Label("Statistic", className="mb-1"),
                     dcc.RadioItems(
                         id="activity-display-mode",
                         options=[
-                            {"label": "Counts", "value": "count"},
-                            {"label": "Percentages", "value": "percent"}
+                            {"label": "Percentage", "value": "percent"},                            
+                            {"label": "Count", "value": "count"}
                         ],
-                        value="count",
+                        value="percent",
                         labelStyle={ 'marginRight': '15px'}
                     )
                 ], width=2),
@@ -363,13 +417,25 @@ app.layout = dbc.Container([
                         clearable=False
                     )
 
-                ],width=4)
+                ],width=2)
 
-            ]),
+            ], align="center", justify="center",className='mb-4'),
             
-            dcc.Graph(id="activity-stacked-bar")
+            dcc.Graph(id="activity-stacked-bar"),
+            dbc.Alert(
+                [
+                    html.H6("Graph description", className="alert-heading"),                    
+                    html.P([
+                        "The above graph shows the distribution of formal / informal volunteers across volunteering activities.", 
+                        html.Br(), html.Br(),
+                        "i.e, each bar shows the percentage of voluneers who do each activity from all volunteers who do the selected volunteering type in the selected year, and filtering by demagrahpics divides these percentages further by demographic categories." 
+                    ])                                               
+                ],
+                color="light",
+                style={"border": "1px solid #ccc", "marginTop": "10px"}
+            )                        
         ])
-    ], id="activity-bar-card", className="mb-5 shadow-sm border-0"),
+    ], id="activity-bar-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
     # ---- Gender Comparison Card ----
     dbc.Card([
@@ -388,7 +454,7 @@ app.layout = dbc.Container([
                         value="Formal",
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Dimension", className="mb-1"),
@@ -399,20 +465,21 @@ app.layout = dbc.Container([
                             clearable=False
                         )
 
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
-                    html.Label("Display Mode", className="mb-1"),
+                    html.Label("Statistic", className="mb-1"),
                     dcc.RadioItems(
                         id="gender-display-mode",
                         options=[
-                            {"label": "Counts", "value": "count"},
-                            {"label": "Percentages", "value": "percent"}
+                            {"label": "Percentage", "value": "percent"},                            
+                            {"label": "Count", "value": "count"}
+
                         ],
-                        value="count",
-                        labelStyle={'display': 'inline-block', 'marginRight': '15px'}
+                        value="percent",
+                        labelStyle={ 'marginRight': '15px'}
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
@@ -425,12 +492,12 @@ app.layout = dbc.Container([
                         clearable=False
                     )
 
-                ], width=3)
-            ]),
+                ], width=2)
+            ], align="center", justify="center",className='mb-4'),
 
             dcc.Graph(id="gender-comparison-bar")
         ])
-    ], id="gender-comparison-card", className="mb-5 shadow-sm border-0"),
+    ], id="gender-comparison-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
     # ---- Boxplot Card ----
     dbc.Card([
         dbc.CardBody([
@@ -449,7 +516,7 @@ app.layout = dbc.Container([
                         value="Total",
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Demographic Dimension", className="mb-1"),
@@ -469,7 +536,7 @@ app.layout = dbc.Container([
                         value="Total",
                         clearable=False
                     )
-                ], width=3),
+                ], width=2),
 
                 dbc.Col([
                     html.Label("Year", className="mb-1"),
@@ -481,12 +548,12 @@ app.layout = dbc.Container([
                         value=max(years),
                         clearable=False
                     )
-                ], width=6)
-            ], className='mb-4'),
+                ], width=2)
+            ], align="center", justify="center",className='mb-4'),
 
             dcc.Graph(id="errorBar-figure")
         ])
-    ], id="errorBar-card", className="mb-5 shadow-sm border-0"),
+    ], id="errorBar-card", className="mb-5 shadow-sm border-0",style={"backgroundColor": "#f8f9fa"}),
 
 
 
@@ -631,6 +698,16 @@ def update_visuals(click_data, metric_value, stat_type, year, reset_clicks, curr
 
     # --- Choropleth map as in your current code ---
     column = resolve_column(metric_value, stat_type)
+    value = d_year.loc[d_year['region'] == new_region, column].values[0]
+
+    # Determine unit for labeling
+    label_map = {
+        'perc': '%',
+        'avg_hours': 'hrs',
+        'median_hours': 'hrs'
+    }
+    unit = label_map.get(stat_type, '')
+
     fig_map = px.choropleth(
         d_year,
         locations="region",
@@ -638,7 +715,7 @@ def update_visuals(click_data, metric_value, stat_type, year, reset_clicks, curr
         color=column,
         color_continuous_scale="Reds",
         featureidkey="properties.name",
-        title=f"Volunteering Map ({year})"
+        title=f"{new_region} {value:.1f}{unit} ({year})"
     )
 
     if new_region != 'Austria':
@@ -687,7 +764,7 @@ def update_insights(metric_dropdown_value, stat_type_value, year):
     }
 
     return [
-        html.H4(f"Year: {year}"),
+        #html.H4(f"Year: {year}"),
         html.H5(f"Highest: {highest['region']} ({highest[column]} {label_map[stat_type_value]})"),
         html.H5(f"Lowest: {lowest['region']} ({lowest[column]} {label_map[stat_type_value]})")
     ]
@@ -715,7 +792,7 @@ def update_time_series(demographic, volunteer_type, show_type, year_range):
             y_label = "Percentage of Volunteers"
         else:
             y_col = f"{volunteer_type}_volunteer_count"
-            y_label = "Number of Volunteers"
+            y_label = "Number of Volunteers (thousands)"
         fig.add_scatter(
             x=subset['year'],
             y=subset[y_col],
@@ -839,7 +916,7 @@ def update_activity_stacked_bar(vol_type, selected_demo, display_mode,selected_y
         y_axis_title = "Percentage of Volunteers (%)"
     else:
         df["value"] = df["count"]
-        y_axis_title = "Volunteers (in thousands)"
+        y_axis_title = "Number of Volunteers (thousands)"
 
     # Plot
     if selected_demo == "Total":
@@ -1131,7 +1208,7 @@ def update_ts2_graph(demographic, category, display_mode, year_range):
             y_label = "Percentage of Volunteers"
         else:
             y_col = f"{vol_type}_volunteer_count"
-            y_label = "Number of Volunteers"
+            y_label = "Number of Volunteers (thousands)"
 
         if y_col in df_filtered.columns:
             fig.add_scatter(
