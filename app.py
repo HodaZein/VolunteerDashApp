@@ -351,7 +351,7 @@ app.layout = dbc.Container([
                 [
                     html.H6("Graph description", className="alert-heading"),                    
                     html.P([
-                        "The above graph shows the reasons that motivated people who volunteered in the selected year and the the barriers that faced people who did not volunteer in the selected year, sorted by 'strongly agree'." 
+                        "The above graph shows the reasons that motivated people who volunteered in the selected year and the barriers that faced people who did not volunteer in the selected year, sorted by 'strongly agree'." 
                     ])                                               
                 ],
                 color="light",
