@@ -1068,13 +1068,13 @@ def update_dimension_options(vol_type):
         options = [
             {"label": "Number of Organizations", "value": "NumberOfOrgs"},
             {"label": "Task Types", "value": "TaskTypes"},
-            {"label": "Areas", "value": "Areas"},
+            {"label": "Activity areas", "value": "Areas"},
             {"label": "Time/week", "value": "Time/week"}
         ]
         default_value = "Areas"
     else:
         options = [
-            {"label": "Areas", "value": "Areas"},
+            {"label": "Activity areas", "value": "Areas"},
             {"label": "Time/week", "value": "Time/week"}
         ]
         default_value = "Areas"
